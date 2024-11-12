@@ -84,17 +84,25 @@ class _TreeViewScreenState extends State<TreeViewScreen> {
         children: [
           ...filteredTree!.rootLocations.values
               .map((rootLocation) => TreeViewWidget(location: rootLocation)),
-          ...filteredTree!.orphanAssets.map((orphanAsset) => ListTile(
-                leading: Image.asset("assets/component.png"),
-                title: Text(orphanAsset.name),
-                trailing: orphanAssetStatus(orphanAsset.status!),
-              )),
+          ...filteredTree!.orphanAssets.map(
+            (orphanAsset) => ListTile(
+              leading: Image.asset("assets/component.png"),
+              title: Text(orphanAsset.name),
+              trailing: orphanAsset.status != null
+                  ? orphanAssetStatus(orphanAsset.status!)
+                  : const SizedBox(), // vai mostrar um widget vazio se status for null
+            ),
+          ),
         ],
       );
     });
   }
 
-  orphanAssetStatus(String status) {
+  Widget orphanAssetStatus(String? status) {
+    if (status == null) {
+      return const SizedBox();
+    }
+
     String imagePath;
     switch (status) {
       case "operating":
